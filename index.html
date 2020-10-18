@@ -73,8 +73,15 @@
     // });
     // OSM_basemap.addTo(map);
 
-    var mapBox = L.tileLayer('https://api.mapbox.com/styles/v1/aborruso/ckgdrilg51qfe1aovd1d55dst/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWJvcnJ1c28iLCJhIjoiY2tnZHdxdXNzMDdjYzJya2ZmZzlpYzljcyJ9.2sp_ORHvWScwad33YYZ2pw', {
-      attribution: '© <a href="https://www.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // var mapBox = L.tileLayer('https://api.mapbox.com/styles/v1/aborruso/ckgdrilg51qfe1aovd1d55dst/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYWJvcnJ1c28iLCJhIjoiY2tnZHdxdXNzMDdjYzJya2ZmZzlpYzljcyJ9.2sp_ORHvWScwad33YYZ2pw', {
+    //   attribution: '© <a href="https://www.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // });
+
+
+    googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      attribution: '<a href="https://www.google.com/maps/">Google</a>'
     });
 
 
@@ -106,7 +113,7 @@
       minZoom: 17,
       maxZoom: 21,
       transparent: true,
-      opacity: 0.3,
+      opacity: 0.5,
       attribution: ' <a href="https://www.agenziaentrate.gov.it/portale/web/guest/schede/fabbricatiterreni/consultazione-cartografia-catastale/servizio-consultazione-cartografia">Agenzia Entrate</a>'
     }).addTo(map);
     var vestizioni = L.tileLayer.wms(url, {
@@ -150,6 +157,18 @@
     var osmAttrib = 'Map data &copy; OpenStreetMap contributors';
     var osm = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 8, attribution: osmAttrib });
     var miniMap = new L.Control.MiniMap(osm, { toggleDisplay: true }).addTo(map);
+
+    var baseMaps = {
+      "Stradale": googleStreets,
+      "Satellite": googleHybrid
+    };
+
+    var overlayMaps = {
+      "Particelle": particelle,
+      "Etichette": vestizioni
+    };
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
 
     var hash = L.hash(map);
 
