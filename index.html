@@ -51,6 +51,16 @@
 
     myvar = getURLParameter('id');
 
+    function onEachFeature(feature, layer) {
+      var popupContent = "";
+
+      if (feature.properties && feature.properties.nome) {
+        popupContent += feature.properties.nome;
+      }
+
+      layer.bindPopup(popupContent);
+    }
+
     var map =
       L.map('map', {
         minZoom: 5,
@@ -123,11 +133,13 @@
         "color": "#ff7800",
         "weight": 5,
         "opacity": 1,
-        "fill": false
+        "fill": true,
+        "fillOpacity": 0
       };
 
       var layerParticella = L.geoJSON(particella.responseJSON, {
-        style: myStyle
+        style: myStyle,
+        onEachFeature: onEachFeature
       }).addTo(map);
 
       map.fitBounds(layerParticella.getBounds());
@@ -135,7 +147,7 @@
     });
 
     var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib='Map data &copy; OpenStreetMap contributors';
+    var osmAttrib = 'Map data &copy; OpenStreetMap contributors';
     var osm2 = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 8, attribution: osmAttrib });
     var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true }).addTo(map);
 
