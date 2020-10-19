@@ -44,12 +44,20 @@
 
   <div id='map'></div>
   <script>
+    var map =
+      L.map('map', {
+        minZoom: 5,
+        maxZoom: 19
+      })
+        .setView([38.1089, 13.3545], 18);
 
     function getURLParameter(name) {
       return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
     };
 
     myvar = getURLParameter('id');
+
+
 
     function onEachFeature(feature, layer) {
       var popupContent = "";
@@ -58,15 +66,10 @@
         popupContent += feature.properties.nome;
       }
 
+
       layer.bindPopup(popupContent);
     }
 
-    var map =
-      L.map('map', {
-        minZoom: 5,
-        maxZoom: 19
-      })
-        .setView([38.1089, 13.3545], 18);
 
     // var OSM_basemap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     //   attribution: '&copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -171,7 +174,11 @@
 
     L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+
+
     var hash = L.hash(map);
+
+
 
   </script>
 </body>
