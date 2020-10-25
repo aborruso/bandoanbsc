@@ -60,14 +60,14 @@
 
 
     // function onEachFeature(feature, layer) {
-      // var popupContent = "";
+    //   var popupContent = "";
 
-      // if (feature.properties && feature.properties.nome) {
-        // popupContent += feature.properties.nome;
-      // }
+    //   if (feature.properties && feature.properties.nome) {
+    //     popupContent += feature.properties.nome;
+    //   }
 
 
-      // layer.bindPopup(popupContent);
+    //   layer.bindPopup(popupContent);
     // }
 
 
@@ -148,9 +148,13 @@
         "fillOpacity": 0
       };
 
+      // var layerParticella = L.geoJSON(particella.responseJSON, {
+      //   style: myStyle,
+      //   onEachFeature: onEachFeature
+      // }).addTo(map);
+
       var layerParticella = L.geoJSON(particella.responseJSON, {
-        style: myStyle,
-        onEachFeature: onEachFeature
+        style: myStyle
       }).addTo(map);
 
       map.fitBounds(layerParticella.getBounds());
