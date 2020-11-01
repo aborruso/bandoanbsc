@@ -29,13 +29,13 @@
 
   <!--
 
-  Grazie a:
+ Grazie a:
 
-- Nino Formica, https://geomappando.com/2018/12/26/come-visualizzare-le-mappe-catastali-dellade-con-leaflet/
-- Ryan M. Cooper, https://medium.com/@maptastik/loading-external-geojson-a-nother-way-to-do-it-with-jquery-c72ae3b41c01
-- Colby Fayock, https://www.freecodecamp.org/news/how-to-set-up-a-custom-mapbox-basemap-with-gatsby-and-react-leaflet/
+ - Nino Formica, https://geomappando.com/2018/12/26/come-visualizzare-le-mappe-catastali-dellade-con-leaflet/
+ - Ryan M. Cooper, https://medium.com/@maptastik/loading-external-geojson-a-nother-way-to-do-it-with-jquery-c72ae3b41c01
+ - Colby Fayock, https://www.freecodecamp.org/news/how-to-set-up-a-custom-mapbox-basemap-with-gatsby-and-react-leaflet/
 
--->
+ -->
 
 </head>
 
@@ -44,7 +44,7 @@
 
   <div id='map'></div>
   <script>
-    var map =
+    const map =
       L.map('map', {
         minZoom: 5,
         maxZoom: 19
@@ -55,21 +55,23 @@
       return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
     };
 
-    myvar = getURLParameter('id');
+    const myvar = getURLParameter('id');
 
 
+    function onEachFeature(feature, layer) {
+      layer.bindPopup()
+      layer.on('click', (a) => {
+        console.log("You clicked the map at latitude: " + a.latlng.lat + " and longitude:" + a.latlng.lng);
 
-    // function onEachFeature(feature, layer) {
-    //   var popupContent = "";
+        const popupContent =
+          feature.properties && feature.properties.nome
+            ? `<a href="https://www.google.com/maps?daddr=${a.latlng.lat},${a.latlng.lng}" target="_blank">Come arrivare</a>`
+            : ""
 
-    //   if (feature.properties && feature.properties.nome) {
-    //     popupContent += feature.properties.nome;
-    //   }
+        layer.bindPopup(popupContent)
+      });
 
-
-    //   layer.bindPopup(popupContent);
-    // }
-
+    }
 
     // var OSM_basemap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     //   attribution: '&copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a>'
@@ -81,7 +83,7 @@
     // });
 
 
-    googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       attribution: '<a href="https://www.google.com/maps/">Google</a>'
@@ -89,28 +91,28 @@
     googleStreets.addTo(map);
 
 
-    googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       attribution: '<a href="https://www.google.com/maps/">Google</a>'
     });
     googleHybrid.addTo(map);
 
-    var ETRS89width = 18.99 - 5.93;
-    var startResolution = ETRS89width / 1024;
-    var grid_resolution = new Array(22);
-    for (var i = 0; i < 22; ++i) {
+    const ETRS89width = 18.99 - 5.93;
+    const startResolution = ETRS89width / 1024;
+    let grid_resolution = new Array(22);
+    for (let i = 0; i < 22; ++i) {
       grid_resolution[i] = startResolution / Math.pow(2, i);
     }
-    var crs_6706 = new L.Proj.CRS('EPSG:6706',
+    const crs_6706 = new L.Proj.CRS('EPSG:6706',
       '+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs',
       {
         resolutions: grid_resolution,
         origin: [0, 0],
         bounds: L.bounds([5.93, 34.76], [18.99, 47.1])
       });
-    var url = 'https://wms.cartografia.agenziaentrate.gov.it/inspire/wms/ows01.php';
-    var particelle = L.tileLayer.wms(url, {
+    const url = 'https://wms.cartografia.agenziaentrate.gov.it/inspire/wms/ows01.php';
+    const particelle = L.tileLayer.wms(url, {
       layers: ['CP.CadastralParcel'],
       crs: crs_6706,
       format: 'image/png',
@@ -120,7 +122,7 @@
       opacity: 0.5,
       attribution: ' <a href="https://www.agenziaentrate.gov.it/portale/web/guest/schede/fabbricatiterreni/consultazione-cartografia-catastale/servizio-consultazione-cartografia">Agenzia Entrate</a>'
     }).addTo(map);
-    var vestizioni = L.tileLayer.wms(url, {
+    const vestizioni = L.tileLayer.wms(url, {
       layers: ['vestizioni'],
       crs: crs_6706,
       format: 'image/png',
@@ -130,17 +132,17 @@
       opacity: 1
     }).addTo(map);
 
-    var particella = $.ajax({
+    const particella = $.ajax({
       url: "https://tanto.carto.com:443/api/v2/sql?format=GeoJSON&q=select%20*%20from%20public.geocarto%20where%20public.geocarto.nome%3D%27" + myvar + "%27",
       dataType: "json",
       success: console.log("Particella caricata."),
-      error: function (xhr) {
+      error(xhr) {
         alert(xhr.statusText)
       }
     })
-    $.when(particella).done(function () {
+    $.when(particella).done(() => {
 
-      var myStyle = {
+      const myStyle = {
         "color": "#ff7800",
         "weight": 5,
         "opacity": 1,
@@ -148,39 +150,33 @@
         "fillOpacity": 0
       };
 
-      // var layerParticella = L.geoJSON(particella.responseJSON, {
-      //   style: myStyle,
-      //   onEachFeature: onEachFeature
-      // }).addTo(map);
-
-      var layerParticella = L.geoJSON(particella.responseJSON, {
-        style: myStyle
+      const layerParticella = L.geoJSON(particella.responseJSON, {
+        style: myStyle,
+        onEachFeature: onEachFeature
       }).addTo(map);
 
       map.fitBounds(layerParticella.getBounds());
 
     });
 
-    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib = 'Map data &copy; OpenStreetMap contributors';
-    var osm = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 8, attribution: osmAttrib });
-    var miniMap = new L.Control.MiniMap(osm, { toggleDisplay: true}).addTo(map);
+    const osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const osmAttrib = 'Map data &copy; OpenStreetMap contributors';
+    const osm = new L.TileLayer(osmUrl, { minZoom: 0, maxZoom: 8, attribution: osmAttrib });
+    const miniMap = new L.Control.MiniMap(osm, { toggleDisplay: true }).addTo(map);
 
-    var baseMaps = {
+    const baseMaps = {
       "Stradale": googleStreets,
       "Satellite": googleHybrid
     };
 
-    var overlayMaps = {
+    const overlayMaps = {
       "Particelle": particelle,
       "Etichette": vestizioni
     };
 
     L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-
-
-    var hash = L.hash(map);
+    const hash = L.hash(map);
 
 
 
