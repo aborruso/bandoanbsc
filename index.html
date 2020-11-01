@@ -34,6 +34,7 @@
  - Nino Formica, https://geomappando.com/2018/12/26/come-visualizzare-le-mappe-catastali-dellade-con-leaflet/
  - Ryan M. Cooper, https://medium.com/@maptastik/loading-external-geojson-a-nother-way-to-do-it-with-jquery-c72ae3b41c01
  - Colby Fayock, https://www.freecodecamp.org/news/how-to-set-up-a-custom-mapbox-basemap-with-gatsby-and-react-leaflet/
+ - Davide Di Modica, https://twitter.com/Linko_ddm
 
  -->
 
@@ -65,7 +66,7 @@
 
         const popupContent =
           feature.properties && feature.properties.nome
-            ? `<a href="https://www.google.com/maps?daddr=${a.latlng.lat},${a.latlng.lng}" target="_blank">Come arrivare</a>`
+            ? `<a href="https://www.google.com/maps?daddr=${a.latlng.lat},${a.latlng.lng}&t=k" target="_blank">Come arrivare</a>`
             : ""
 
         layer.bindPopup(popupContent)
